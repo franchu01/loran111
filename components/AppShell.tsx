@@ -2,13 +2,20 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { BookOpen, Star, Plus, BarChart2, LogOut, Heart } from "lucide-react";
+import { BookOpen, Plus, BarChart2, LogOut, Heart } from "lucide-react";
 import { getUserInitial } from "@/lib/utils";
 
 interface AppShellProps {
   children: React.ReactNode;
   userName: string;
 }
+
+const NAV_ITEMS = [
+  { href: "/", icon: BookOpen, label: "Log" },
+  { href: "/wishlist", icon: Heart, label: "Deseos" },
+  null, // center placeholder for + button
+  { href: "/stats", icon: BarChart2, label: "Stats" },
+];
 
 export default function AppShell({ children, userName }: AppShellProps) {
   const pathname = usePathname();
@@ -20,83 +27,133 @@ export default function AppShell({ children, userName }: AppShellProps) {
     router.refresh();
   }
 
-  const navItems = [
-    { href: "/", icon: BookOpen, label: "Log" },
-    { href: "/wishlist", icon: Heart, label: "Deseos" },
-    { href: "/stats", icon: BarChart2, label: "Stats" },
-  ];
-
   return (
-    <div className="flex flex-col min-h-screen bg-cream">
-      {/* Top bar */}
-      <header className="sticky top-0 z-40 bg-cream border-b border-[#3C241520] px-4 py-3 flex items-center justify-between">
-        <div className="w-8" />
+    <div className="flex flex-col bg-cream" style={{ minHeight: "100dvh" }}>
+
+      {/* ── Top bar ─────────────────────────────────────────────────── */}
+      <header
+        className="sticky top-0 z-40 flex items-end justify-between px-5 pb-3"
+        style={{
+          paddingTop: "calc(var(--sat) + 12px)",
+          background: "rgba(245,242,237,0.88)",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
+          borderBottom: "1px solid rgba(60,36,21,0.07)",
+        }}
+      >
+        {/* Spacer left */}
+        <div className="w-[72px]" />
+
+        {/* Logo */}
         <h1
-          className="text-2xl text-espresso tracking-tight"
+          className="text-[26px] text-espresso tracking-tight leading-none"
           style={{ fontFamily: "var(--font-playfair), serif", fontWeight: 700 }}
         >
           Loran
         </h1>
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-espresso flex items-center justify-center text-white text-sm font-semibold">
+
+        {/* Avatar + logout */}
+        <div className="flex items-center gap-2 w-[72px] justify-end">
+          <div className="w-8 h-8 rounded-full bg-espresso flex items-center justify-center text-white text-sm font-semibold select-none">
             {getUserInitial(userName)}
           </div>
           <button
             onClick={handleLogout}
-            className="text-warm-gray hover:text-espresso transition-colors p-1"
+            className="text-warm-gray active:text-espresso transition-colors p-1"
             aria-label="Cerrar sesión"
           >
-            <LogOut size={18} />
+            <LogOut size={17} strokeWidth={2} />
           </button>
         </div>
       </header>
 
-      {/* Main content */}
-      <main className="flex-1 pb-24">{children}</main>
+      {/* ── Main content ─────────────────────────────────────────────── */}
+      <main
+        className="flex-1 scroll-area"
+        style={{ paddingBottom: "calc(var(--sab) + 80px)" }}
+      >
+        {children}
+      </main>
 
-      {/* Bottom nav */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-[#3C241520] flex items-center justify-around px-2 py-2 safe-area-pb">
-        {navItems.slice(0, 2).map(({ href, icon: Icon, label }) => {
-          const active = pathname === href;
-          return (
-            <Link
-              key={href}
-              href={href}
-              className={`flex flex-col items-center gap-1 px-4 py-1 rounded-xl transition-colors ${
-                active ? "text-espresso" : "text-warm-gray"
-              }`}
-            >
-              <Icon size={22} strokeWidth={active ? 2.5 : 2} />
-              <span className="text-xs font-medium">{label}</span>
-            </Link>
-          );
-        })}
+      {/* ── Bottom navigation ────────────────────────────────────────── */}
+      <nav
+        className="fixed bottom-0 left-0 right-0 z-40"
+        style={{
+          background: "rgba(255,255,255,0.92)",
+          backdropFilter: "blur(24px)",
+          WebkitBackdropFilter: "blur(24px)",
+          borderTop: "1px solid rgba(60,36,21,0.08)",
+          paddingBottom: "var(--sab)",
+        }}
+      >
+        <div className="flex items-center justify-around px-2 pt-2 pb-1">
+          {NAV_ITEMS.map((item, i) => {
+            // Center + button
+            if (item === null) {
+              return (
+                <div key="add" className="flex flex-col items-center flex-1">
+                  <Link
+                    href="/entry/new"
+                    className="tap-scale transition-transform duration-150"
+                    aria-label="Nueva entrada"
+                  >
+                    <div
+                      className="w-13 h-13 flex items-center justify-center"
+                      style={{
+                        width: 52,
+                        height: 52,
+                        borderRadius: 16,
+                        background: "#3C2415",
+                        boxShadow: "0 4px 16px rgba(60,36,21,0.35), 0 1px 3px rgba(60,36,21,0.2)",
+                      }}
+                    >
+                      <Plus size={26} color="white" strokeWidth={2.5} />
+                    </div>
+                  </Link>
+                </div>
+              );
+            }
 
-        {/* Center Add button */}
-        <Link
-          href="/entry/new"
-          className="flex flex-col items-center -mt-5"
-        >
-          <div className="w-14 h-14 rounded-2xl bg-espresso flex items-center justify-center shadow-lg shadow-espresso/30 transition-transform duration-200 hover:scale-105 active:scale-95">
-            <Plus size={28} color="white" strokeWidth={2.5} />
-          </div>
-        </Link>
+            const { href, icon: Icon, label } = item;
+            const active = pathname === href;
 
-        {navItems.slice(2).map(({ href, icon: Icon, label }) => {
-          const active = pathname === href;
-          return (
-            <Link
-              key={href}
-              href={href}
-              className={`flex flex-col items-center gap-1 px-4 py-1 rounded-xl transition-colors ${
-                active ? "text-espresso" : "text-warm-gray"
-              }`}
-            >
-              <Icon size={22} strokeWidth={active ? 2.5 : 2} />
-              <span className="text-xs font-medium">{label}</span>
-            </Link>
-          );
-        })}
+            return (
+              <Link
+                key={href}
+                href={href}
+                className="flex flex-col items-center gap-[3px] flex-1 tap-scale transition-transform duration-150"
+              >
+                {/* Icon with active pill */}
+                <div
+                  className="flex items-center justify-center transition-all duration-200"
+                  style={{
+                    width: 48,
+                    height: 30,
+                    borderRadius: 999,
+                    background: active ? "#DDD9CE" : "transparent",
+                  }}
+                >
+                  <Icon
+                    size={20}
+                    strokeWidth={active ? 2.5 : 1.8}
+                    color={active ? "#3C2415" : "#8C8278"}
+                  />
+                </div>
+                {/* Label */}
+                <span
+                  className="text-[10px] leading-none transition-colors duration-200"
+                  style={{
+                    fontWeight: active ? 600 : 400,
+                    color: active ? "#3C2415" : "#8C8278",
+                    letterSpacing: "0.01em",
+                  }}
+                >
+                  {label}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
       </nav>
     </div>
   );

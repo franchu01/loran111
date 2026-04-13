@@ -34,7 +34,14 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-pale-oak flex items-center justify-center p-6">
+    <div
+      className="bg-pale-oak flex items-center justify-center p-6"
+      style={{
+        minHeight: "100dvh",
+        paddingTop: "calc(var(--sat) + 24px)",
+        paddingBottom: "calc(var(--sab) + 24px)",
+      }}
+    >
       <div className="w-full max-w-sm animate-fade-in">
         {/* Logo */}
         <div className="text-center mb-8">
