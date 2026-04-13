@@ -1,10 +1,10 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
-import LogPage from "./LogPage";
+import StatsClient from "./StatsClient";
 
-export default async function Home() {
+export default async function StatsPage() {
   const session = await getSession();
   if (!session) redirect("/login");
 
-  return <LogPage userName={session.userName} />;
+  return <StatsClient userName={session.userName} />;
 }
