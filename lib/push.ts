@@ -7,16 +7,12 @@ webpush.setVapidDetails(
   process.env.VAPID_PRIVATE_KEY!
 );
 
-export async function sendPushToOthers(
-  excludeUserId: string,
-  payload: { title: string; body: string; url?: string }
-) {
-  const subscriptions = await prisma.pushSubscription.findMany({
-    where: { userId: { not: excludeUserId } },
-  });
+type Sub = { id: string; endpoint: string; p256dh: string; auth: string };
+type Payload = { title: string; body: string; url?: string };
 
+async function sendToSubscriptions(subs: Sub[], payload: Payload) {
   await Promise.allSettled(
-    subscriptions.map((sub) =>
+    subs.map((sub) =>
       webpush
         .sendNotification(
           { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
@@ -29,4 +25,16 @@ export async function sendPushToOthers(
         })
     )
   );
+}
+
+export async function sendPushToUser(userId: string, payload: Payload) {
+  const subs = await prisma.pushSubscription.findMany({ where: { userId } });
+  await sendToSubscriptions(subs, payload);
+}
+
+export async function sendPushToOthers(excludeUserId: string, payload: Payload) {
+  const subs = await prisma.pushSubscription.findMany({
+    where: { userId: { not: excludeUserId } },
+  });
+  await sendToSubscriptions(subs, payload);
 }

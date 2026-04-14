@@ -15,6 +15,19 @@ model User {
   entries           Entry[]
   wishlist          Wishlist[]
   pushSubscriptions PushSubscription[]
+  messagesSent      Message[]          @relation("MessagesSent")
+  messagesReceived  Message[]          @relation("MessagesReceived")
+}
+
+model Message {
+  id         String   @id @default(cuid())
+  content    String
+  read       Boolean  @default(false)
+  senderId   String
+  receiverId String
+  sender     User     @relation("MessagesSent",     fields: [senderId],   references: [id])
+  receiver   User     @relation("MessagesReceived", fields: [receiverId], references: [id])
+  createdAt  DateTime @default(now())
 }
 
 model PushSubscription {

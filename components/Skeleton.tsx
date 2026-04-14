@@ -293,3 +293,63 @@ export function SkeletonEntryDetail() {
     </div>
   );
 }
+
+/** Mirrors the Mensajes chat list */
+export function SkeletonMensajesList() {
+  return (
+    <div className="flex flex-col gap-1">
+      {[1, 0.65, 0.35].map((opacity, i) => (
+        <div
+          key={i}
+          className="flex items-center gap-3 bg-white rounded-2xl px-4 py-3.5 shadow-sm border border-[#3C241508]"
+          style={{ opacity }}
+        >
+          <SkeletonAvatar size={48} />
+          <div className="flex-1 flex flex-col gap-2">
+            <div className="flex items-center justify-between gap-2">
+              <SkeletonText width="38%" height={15} />
+              <SkeletonText width={32} height={11} />
+            </div>
+            <SkeletonText width="65%" height={13} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** Mirrors the chat thread loading state */
+export function SkeletonChatThread() {
+  const bubbles = [
+    { fromMe: false, width: "58%" },
+    { fromMe: true,  width: "42%" },
+    { fromMe: false, width: "72%" },
+    { fromMe: true,  width: "35%" },
+    { fromMe: true,  width: "55%" },
+    { fromMe: false, width: "48%" },
+  ];
+  return (
+    <div className="flex flex-col gap-3 pt-2">
+      {/* Day separator */}
+      <div className="flex items-center gap-3 my-2">
+        <div className="flex-1 h-px bg-[#3C241514]" />
+        <Skeleton style={{ width: 40, height: 12 }} className="rounded-full" />
+        <div className="flex-1 h-px bg-[#3C241514]" />
+      </div>
+      {bubbles.map((b, i) => (
+        <div key={i} className={`flex ${b.fromMe ? "justify-end" : "justify-start"}`}>
+          <div className="flex flex-col gap-1" style={{ width: b.width }}>
+            <Skeleton
+              className={b.fromMe ? "rounded-2xl rounded-br-sm" : "rounded-2xl rounded-bl-sm"}
+              style={{ height: 38 }}
+            />
+            <Skeleton
+              style={{ width: 28, height: 10, alignSelf: b.fromMe ? "flex-end" : "flex-start" }}
+              className="rounded-full"
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}

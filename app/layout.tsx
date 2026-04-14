@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Inter, Playfair_Display, DM_Sans } from "next/font/google";
 import "./globals.css";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 
@@ -12,6 +12,12 @@ const playfair = Playfair_Display({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-playfair",
+});
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-dm-sans",
 });
 
 export const viewport: Viewport = {
@@ -40,7 +46,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${inter.className} ${playfair.variable} h-full`}>
+    <html lang="es" className={`${inter.className} ${playfair.variable} ${dmSans.variable} h-full`}>
       <body className="min-h-full">
         {children}
         <ServiceWorkerRegistration />
