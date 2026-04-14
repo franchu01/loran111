@@ -52,9 +52,9 @@ export default function EntryForm({ initialData, entryId }: EntryFormProps) {
 
   // Reset best/worst when ordered items change
   useEffect(() => {
-    if (bestItem && !orderedItems.includes(bestItem)) setBestItem("");
-    if (worstItem && !orderedItems.includes(worstItem)) setWorstItem("");
-  }, [orderedItems, bestItem, worstItem]);
+    setBestItem((prev) => (orderedItems.includes(prev) ? prev : ""));
+    setWorstItem((prev) => (orderedItems.includes(prev) ? prev : ""));
+  }, [orderedItems]);
 
   function validate() {
     const e: Record<string, string> = {};

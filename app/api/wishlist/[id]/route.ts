@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
+import { sendPushToOthers } from "@/lib/push";
 
 export async function PUT(
   req: NextRequest,
@@ -24,6 +25,14 @@ export async function PUT(
     },
     include: { addedBy: { select: { name: true } } },
   });
+
+  if (body.visited === true && !item.visited) {
+    sendPushToOthers(session.userId, {
+      title: "¡Deseo cumplido!",
+      body: `${session.userName} marcó ${item.restaurantName} como visitado`,
+      url: "/wishlist",
+    });
+  }
 
   return NextResponse.json(updated);
 }

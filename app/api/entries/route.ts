@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
+import { sendPushToOthers } from "@/lib/push";
 
 export async function GET(req: NextRequest) {
   const session = await getSession();
@@ -50,6 +51,12 @@ export async function POST(req: NextRequest) {
       userId: session.userId,
     },
     include: { createdBy: { select: { name: true } } },
+  });
+
+  sendPushToOthers(session.userId, {
+    title: "Nueva entrada en el log",
+    body: `${entry.createdBy.name} agregó ${entry.restaurantName}`,
+    url: `/entry/${entry.id}`,
   });
 
   return NextResponse.json(entry, { status: 201 });
