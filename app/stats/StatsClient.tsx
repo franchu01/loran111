@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { UtensilsCrossed, Star, RotateCcw, Trophy, ShoppingBag, Users, MapPin } from "lucide-react";
 import AppShell from "@/components/AppShell";
 import StarRating from "@/components/StarRating";
+import { SkeletonStats } from "@/components/Skeleton";
 import { formatDate } from "@/lib/utils";
 
 interface StatsData {
@@ -44,11 +45,7 @@ export default function StatsClient({ userName }: { userName: string }) {
   if (loading) {
     return (
       <AppShell userName={userName}>
-        <div className="p-4 grid grid-cols-2 gap-3">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="bg-white rounded-2xl h-24 animate-pulse" />
-          ))}
-        </div>
+        <SkeletonStats />
       </AppShell>
     );
   }

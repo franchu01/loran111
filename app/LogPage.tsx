@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Search, UtensilsCrossed } from "lucide-react";
 import AppShell from "@/components/AppShell";
 import EntryCard from "@/components/EntryCard";
+import { SkeletonEntryCard } from "@/components/Skeleton";
 
 interface Entry {
   id: string;
@@ -86,12 +87,8 @@ export default function LogPage({ userName }: { userName: string }) {
         {/* Entries list */}
         {loading ? (
           <div className="flex flex-col gap-3">
-            {[...Array(3)].map((_, i) => (
-              <div
-                key={i}
-                className="bg-white rounded-2xl h-32 animate-pulse"
-                style={{ opacity: 1 - i * 0.2 }}
-              />
+            {[1, 0.6, 0.35].map((opacity, i) => (
+              <SkeletonEntryCard key={i} opacity={opacity} />
             ))}
           </div>
         ) : entries.length === 0 ? (

@@ -6,6 +6,7 @@ import { Heart, MapPin, Plus, Check, Trash2, X } from "lucide-react";
 import AppShell from "@/components/AppShell";
 import UserBadge from "@/components/UserBadge";
 import ConfirmDialog from "@/components/ConfirmDialog";
+import { SkeletonWishlistItem } from "@/components/Skeleton";
 
 interface WishlistItem {
   id: string;
@@ -150,8 +151,8 @@ export default function WishlistClient({
         {/* Items */}
         {loading ? (
           <div className="flex flex-col gap-3">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="bg-white rounded-2xl h-24 animate-pulse" />
+            {[1, 0.6, 0.35].map((opacity, i) => (
+              <SkeletonWishlistItem key={i} opacity={opacity} />
             ))}
           </div>
         ) : items.length === 0 ? (

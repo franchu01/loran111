@@ -20,6 +20,7 @@ import AppShell from "@/components/AppShell";
 import StarRating from "@/components/StarRating";
 import UserBadge from "@/components/UserBadge";
 import ConfirmDialog from "@/components/ConfirmDialog";
+import { SkeletonEntryDetail } from "@/components/Skeleton";
 import { formatDate, parseOrderedItems } from "@/lib/utils";
 
 interface Entry {
@@ -68,9 +69,7 @@ export default function EntryDetailClient({
   if (loading) {
     return (
       <AppShell userName={userName}>
-        <div className="p-4">
-          <div className="bg-white rounded-2xl h-96 animate-pulse" />
-        </div>
+        <SkeletonEntryDetail />
       </AppShell>
     );
   }
